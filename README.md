@@ -1,0 +1,1 @@
+# Wazuh-Agent-Auto-Install
