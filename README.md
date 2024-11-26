@@ -1,6 +1,6 @@
 # Wazuh-Agent-Auto-Install
 
-ossec.conf
+### agent.conf
 ```bash
 <localfile>
 <location>Microsoft-Windows-Sysmon/Operational</location>
