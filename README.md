@@ -2,7 +2,7 @@
 
 ### Quick Download
 Run powershell as Administrator:
-```ps
+```powershell
 Invoke-WebRequest -Uri https://raw.githubusercontent.com/zahidmm/Wazuh-Agent-Auto-Install/main/win10wazuhagentauto.ps1 -OutFile win10wazuhagentauto.ps1
 PowerShell -NoProfile -ExecutionPolicy Bypass -File win10wazuhagentauto.ps1
 ```
