@@ -1,9 +1,10 @@
-# Variables - Update these as needed
-$ManagerIP = "192.168.24.245"
-$RegistrationIP = "192.168.24.245"
+# Variables
+$ManagerIP = "192.168.51.1"    # <<< CHANGE IT <<<
+$RegistrationIP = "192.168.51.1"    # <<< CHANGE IT <<<
 $AgentGroup = "default"
 $SysmonConfigURL = "https://raw.githubusercontent.com/olafhartong/sysmon-modular/master/sysmonconfig.xml"
 $WazuhAgentDownloadURL = "https://packages.wazuh.com/4.x/windows/wazuh-agent-4.7.5-1.msi"
+$AuditLogPath = "$env:TMP\audit-config-log.txt"
 
 # Temporary Paths
 $TempPath = "$env:TMP"
@@ -71,5 +72,35 @@ try {
 } catch {
     Write-Error "Cleanup failed. Error: $_" | Out-File $LogPath -Append
 }
+
+# Log Initialization
+Write-Host "Starting Audit Process Creation configuration..." | Out-File $AuditLogPath -Append
+
+try {
+    # Enable Process Creation Auditing
+    Write-Host "Enabling Audit Process Creation..."
+    AuditPol /set /subcategory:"Process Creation" /success:enable /failure:enable | Out-File $AuditLogPath -Append
+    
+    # Verify the configuration
+    Write-Host "Verifying Audit Process Creation configuration..."
+    $AuditStatus = AuditPol /get /subcategory:"Process Creation"
+    Write-Host $AuditStatus | Out-File $AuditLogPath -Append
+    Write-Host "Audit Process Creation successfully enabled!"
+} catch {
+    Write-Error "Failed to enable Audit Process Creation. Error: $_" | Out-File $AuditLogPath -Append
+    exit 1
+}
+
+# Enable Command Line Process Logging
+Write-Host "Enabling command line logging for process creation..."
+try {
+    New-ItemProperty -Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\System\Audit" -Name "ProcessCreationIncludeCmdLine_Enabled" -Value 1 -PropertyType DWord -Force | Out-File $AuditLogPath -Append
+    Write-Host "Command line logging successfully enabled!"
+} catch {
+    Write-Error "Failed to enable command line logging. Error: $_" | Out-File $AuditLogPath -Append
+    exit 1
+}
+
+Write-Host "Audit Process Creation configuration completed successfully!" | Out-File $AuditLogPath -Append
 
 Write-Host "Installation complete!" | Out-File $LogPath -Append
