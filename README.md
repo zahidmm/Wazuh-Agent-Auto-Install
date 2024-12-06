@@ -8,6 +8,7 @@ PowerShell -NoProfile -ExecutionPolicy Bypass -File win10wazuhagentauto.ps1
 ```
 
 ### agent.conf
+Edit agent.conf in wazuh
 ```bash
 <localfile>
   <location>Microsoft-Windows-Sysmon/Operational</location>
